@@ -99,7 +99,7 @@ export class JwksClient {
     }, options);
   }
 
-  getSigningKey = (kid, cb) => {
+  getSigningKey = (kid, cb, options) => {
     this.logger(`Fetching signing key for '${kid}'`);
 
     this.getSigningKeys((err, keys) => {
@@ -114,6 +114,6 @@ export class JwksClient {
         this.logger(`Unable to find a signing key that matches '${kid}'`);
         return cb(new SigningKeyNotFoundError(`Unable to find a signing key that matches '${kid}'`));
       }
-    });
+    }, options);
   }
 }
