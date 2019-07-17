@@ -8,8 +8,13 @@ export default function(client, { cacheMaxEntries = 5, cacheMaxAge = ms('10h') }
 
   logger(`Configured caching of singing keys. Max: ${cacheMaxEntries} / Age: ${cacheMaxAge}`);
   return memoizer({
-    load: (kid, callback) => {
-      getSigningKey(kid, (err, key) => {
+    load: (kid, options, callback) => {
+      if (!cb && typeof options === 'function') {
+        cb = options;
+        options = undefined;
+      }
+
+      getSigningKey(kid, options, (err, key) => {
         if (err) {
           return callback(err);
         }
