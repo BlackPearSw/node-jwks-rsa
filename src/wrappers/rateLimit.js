@@ -16,7 +16,11 @@ export default function(client, { jwksRequestsPerMinute = 10 , jwksRequestsPerIn
     logger(`Configured rate limiting to JWKS endpoint at ${jwksRequestsPerMinute}/minute`);
   }
 
-  return (kid, cb) => {
+  return (kid, options, cb) => {
+    if (!cb && typeof options === 'function') {
+      cb = options;
+    }
+
     limiter.removeTokens(1, (err, remaining) => {
       if (err) {
         return cb(err);
