@@ -33,7 +33,7 @@ export class JwksClient {
     }
   }
 
-  getKeys(cb, options = {}) {
+  getKeys(options = {}, cb) {
     this.logger(`Fetching keys from '${this.options.jwksUri}'`);
 
     let requestLibrary = request;
@@ -62,8 +62,8 @@ export class JwksClient {
     });
   }
 
-  getSigningKeys(cb, options) {
-    this.getKeys((err, keys) => {
+  getSigningKeys(options, cb) {
+    this.getKeys(options, (err, keys) => {
       if (err) {
         return cb(err);
       }
@@ -96,13 +96,13 @@ export class JwksClient {
 
       this.logger('Signing Keys:', signingKeys);
       return cb(null, signingKeys);
-    }, options);
+    });
   }
 
-  getSigningKey = (kid, cb, options) => {
+  getSigningKey = (kid, options, cb) => {
     this.logger(`Fetching signing key for '${kid}'`);
 
-    this.getSigningKeys((err, keys) => {
+    this.getSigningKeys(options, (err, keys) => {
       if (err) {
         return cb(err);
       }
@@ -114,6 +114,6 @@ export class JwksClient {
         this.logger(`Unable to find a signing key that matches '${kid}'`);
         return cb(new SigningKeyNotFoundError(`Unable to find a signing key that matches '${kid}'`));
       }
-    }, options);
+    });
   }
 }
