@@ -34,6 +34,11 @@ export class JwksClient {
   }
 
   getKeys(options = {}, cb) {
+    if (!cb && typeof options === 'function') {
+      cb = options;
+      options = undefined;
+    }
+
     this.logger(`Fetching keys from '${this.options.jwksUri}'`);
 
     let requestLibrary = request;
@@ -63,6 +68,11 @@ export class JwksClient {
   }
 
   getSigningKeys(options, cb) {
+    if (!cb && typeof options === 'function') {
+      cb = options;
+      options = undefined;
+    }
+
     this.getKeys(options, (err, keys) => {
       if (err) {
         return cb(err);
@@ -100,6 +110,10 @@ export class JwksClient {
   }
 
   getSigningKey = (kid, options, cb) => {
+    if (!cb && typeof options === 'function') {
+      cb = options;
+      options = undefined;
+    }
     this.logger(`Fetching signing key for '${kid}'`);
 
     this.getSigningKeys(options, (err, keys) => {
