@@ -3,12 +3,18 @@ import { RateLimiter } from 'limiter';
 
 import JwksRateLimitError from '../errors/JwksRateLimitError';
 
-export default function(client, { jwksRequestsPerMinute = 10 } = options) {
+export default function(client, { jwksRequestsPerMinute = 10 , jwksRequestsPerInterval, interval} = options) {
   const logger = debug('jwks');
   const getSigningKey = client.getSigningKey;
 
-  const limiter = new RateLimiter(jwksRequestsPerMinute, 'minute', true);
-  logger(`Configured rate limiting to JWKS endpoint at ${jwksRequestsPerMinute}/minute`);
+  let limiter;
+  if (jwksRequestsPerInterval && interval) {
+    limiter = new RateLimiter(jwksRequestsPerInterval, interval, true);
+    logger(`Configured rate limiting to JWKS endpoint at ${jwksRequestsPerInterval}/${interval}`);
+  } else {
+    limiter = new RateLimiter(jwksRequestsPerMinute, 'minute', true);
+    logger(`Configured rate limiting to JWKS endpoint at ${jwksRequestsPerMinute}/minute`);
+  }
 
   return (kid, cb) => {
     limiter.removeTokens(1, (err, remaining) => {

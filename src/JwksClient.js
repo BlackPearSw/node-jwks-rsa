@@ -33,9 +33,16 @@ export class JwksClient {
     }
   }
 
-  getKeys(cb) {
+  getKeys(cb, options = {}) {
     this.logger(`Fetching keys from '${this.options.jwksUri}'`);
-    request({
+
+    let requestLibrary = request;
+
+    if (options.proxyUrl) {
+      requestLibrary = request.defaults({'proxy': options.proxyUrl});
+    }
+
+    requestLibrary({
       json: true,
       uri: this.options.jwksUri,
       strictSSL: this.options.strictSsl,
@@ -55,7 +62,7 @@ export class JwksClient {
     });
   }
 
-  getSigningKeys(cb) {
+  getSigningKeys(cb, options) {
     this.getKeys((err, keys) => {
       if (err) {
         return cb(err);
@@ -89,7 +96,7 @@ export class JwksClient {
 
       this.logger('Signing Keys:', signingKeys);
       return cb(null, signingKeys);
-    });
+    }, options);
   }
 
   getSigningKey = (kid, cb) => {
