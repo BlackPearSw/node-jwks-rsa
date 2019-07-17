@@ -9,8 +9,8 @@ export default function(client, { cacheMaxEntries = 5, cacheMaxAge = ms('10h') }
   logger(`Configured caching of singing keys. Max: ${cacheMaxEntries} / Age: ${cacheMaxAge}`);
   return memoizer({
     load: (kid, options, callback) => {
-      if (!cb && typeof options === 'function') {
-        cb = options;
+      if (!callback && typeof options === 'function') {
+        callback = options;
         options = undefined;
       }
 
