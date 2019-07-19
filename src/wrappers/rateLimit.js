@@ -31,7 +31,7 @@ export default function(client, { jwksRequestsPerMinute = 10 , jwksRequestsPerIn
         logger('Too many requests to the JWKS endpoint');
         return cb(new JwksRateLimitError('Too many requests to the JWKS endpoint'));
       } else {
-        return getSigningKey(kid, cb);
+        return getSigningKey(kid, options, cb);
       }
     });
   };
